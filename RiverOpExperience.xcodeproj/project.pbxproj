@@ -306,7 +306,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.SevdanTakace.Rersxperce;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "RiverOpExperience-App 1782214200";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "RiverOpExperience-App";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -362,7 +362,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.SevdanTakace.Rersxperce;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "RiverOpExperience-App 1782214200";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "RiverOpExperience-App";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
