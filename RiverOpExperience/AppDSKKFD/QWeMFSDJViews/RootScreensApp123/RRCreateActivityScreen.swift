@@ -36,15 +36,35 @@ struct RRCreateActivityScreen: View {
         .confirmationDialog("Choose Image Source", isPresented: $rrVm.rrShowImageSourceDialog, titleVisibility: .visible) {
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
                 Button("Open Camera") {
-                    rrVm.rrShowCameraPicker = true
+                    RRPermissions.rrCheckCamera { granted in
+                        if granted {
+                            rrVm.rrShowCameraPicker = true
+                        } else {
+                            rrVm.rrDeniedKind = .camera
+                            rrVm.rrShowSettingsAlert = true
+                        }
+                    }
                 }
             }
 
             Button("Open Gallery") {
-                rrVm.rrShowGalleryPicker = true
+                RRPermissions.rrCheckGallery { granted in
+                    if granted {
+                        rrVm.rrShowGalleryPicker = true
+                    } else {
+                        rrVm.rrDeniedKind = .gallery
+                        rrVm.rrShowSettingsAlert = true
+                    }
+                }
             }
 
             Button("Cancel", role: .cancel) { }
+        }
+        .alert("Permission needed", isPresented: $rrVm.rrShowSettingsAlert) {
+            Button("Open Settings") { RRPermissions.rrOpenSettings() }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text(rrVm.rrDeniedMessage)
         }
         .sheet(isPresented: $rrVm.rrShowCameraPicker) {
             RRImagePicker(rrSourceType: .camera) { rrImage in
@@ -915,5 +935,45 @@ struct RRStoryEndingScreen: View {
             RoundedRectangle(cornerRadius: 20)
                 .fill(.ultraThinMaterial)
         )
+    }
+}
+
+enum RRMediaKind {
+    case camera
+    case gallery
+}
+
+enum RRPermissions {
+    static func rrCheckCamera(_ completion: @escaping (Bool) -> Void) {
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+        case .authorized:
+            completion(true)
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                DispatchQueue.main.async { completion(granted) }
+            }
+        default:
+            completion(false)
+        }
+    }
+
+    static func rrCheckGallery(_ completion: @escaping (Bool) -> Void) {
+        switch PHPhotoLibrary.authorizationStatus(for: .readWrite) {
+        case .authorized, .limited:
+            completion(true)
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
+                DispatchQueue.main.async {
+                    completion(status == .authorized || status == .limited)
+                }
+            }
+        default:
+            completion(false)
+        }
+    }
+
+    static func rrOpenSettings() {
+        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+        UIApplication.shared.open(url)
     }
 }

@@ -4,12 +4,11 @@ import AudioToolbox
 import StoreKit
 
 struct AppDSKKFDConfig {
-    static let GradientTextRiver9945 = "RIVER"
-    static let GradientTextRUNNER9945 = "RUNNER"
+    static let GradientTextRiver9945 = "Rivers"
+    static let GradientTextRUNNER9945 = "Experience"
     static let GradientImageRImg9945 = "BoltLogo"
     
-    static let GradientImageRprivacy = "https://example.com/privacy"
-    static let GradientImageRterms = "https://example.com/terms"
+    static let GradientImageRprivacy = "https://www.freeprivacypolicy.com/live/95b014b1-4bc2-405b-bc59-3b29d68ab158"
 }
 
 enum RRHapticsManager {

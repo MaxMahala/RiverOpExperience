@@ -1,0 +1,103 @@
+# fastlane/Fastfile
+default_platform :ios
+
+platform :ios do
+
+  before_all do
+    setup_circle_ci
+  end
+
+  desc "Buils App without bitcode"
+  lane :build do
+    build_app(scheme: ENV['PROJ_SCHEME'],
+              project: ENV['XCODE_PROJ'],
+              include_bitcode: false)
+  end
+
+  desc "Fetching or creating certificates in Apple Developer"
+  lane :manage_provision do
+    api_key = app_store_connect_api_key(
+      key_id: ENV['API_KEY_ID'],
+      issuer_id: ENV['API_ISSUER_ID'],
+      key_filepath: ENV['API_KEY_FILEPATH']
+    )
+    match(
+      git_url: ENV['MATCH_GIT_URL'],
+      git_branch: "appstore",
+      git_full_name: "MaxMahala",
+      git_user_email: "maximmagala@gmail.com",
+      type: "appstore",
+      app_identifier: ENV['BASE_BUNDLE'],
+      profile_name: ENV['MAIN_TARGET']+'-App',
+      output_path: 'fastlane/provision',
+      readonly: false
+    )
+  end
+
+  desc "Updating project Team ID and Provision Profiles"
+  lane :update_project do
+    update_project_provisioning(
+      xcodeproj: ENV['XCODE_PROJ'],
+      profile: "fastlane/provision/AppStore_#{ENV['BASE_BUNDLE']}.mobileprovision",
+      target_filter: ENV["MAIN_TARGET"],
+    )
+    update_project_team(
+      path: ENV['XCODE_PROJ'],
+      targets: ENV["MAIN_TARGET"],
+      teamid: ENV["TEAM_ID"]
+    )
+  end
+
+  desc "Upload metadata, screenshots and build to App Store Connect, then sumbit for review"
+  lane :submit_build do
+    deliver(
+      skip_metadata: true,
+      skip_screenshots: true,
+      screenshots_path: 'fastlane/design',
+      metadata_path: "fastlane/metadata",
+      app_rating_config_path: "fastlane/metadata/ratings_config.json",
+      submission_information: {
+        export_compliance_available_on_french_store: false,
+        export_compliance_contains_proprietary_cryptography: false,
+        export_compliance_contains_third_party_cryptography: false,
+        export_compliance_is_exempt: false,
+        export_compliance_uses_encryption: false,
+        export_compliance_app_type: nil,
+        export_compliance_encryption_updated: false,
+        export_compliance_compliance_required: false,
+        export_compliance_platform: "ios",
+        content_rights_contains_third_party_content: false,
+        content_rights_has_rights: false,
+        add_id_info_limits_tracking: false,
+        add_id_info_serves_ads: false,
+        add_id_info_tracks_action: false,
+        add_id_info_tracks_install: false,
+        add_id_info_uses_idfa: true,
+      },
+      reject_if_possible: false,
+      overwrite_screenshots: false,
+      run_precheck_before_submit: true,
+      precheck_include_in_app_purchases: false,
+      submit_for_review: false, #temporary
+      automatic_release: true,
+      precheck_default_rule_level: ":warn", #:error
+      force: true
+    )
+  end
+
+  desc "Build, sign and upload a new build to the App Store."
+  desc "This will do the following:"
+  desc ""
+  desc "- Create new screenshots and store them in `./fastlane/screenshots`"
+  desc "- Collect the app metadata from `./fastlane/metadata`"
+  desc "- Upload screenshots + app metadata"
+  desc "- Build, sign and upload the app"
+  desc "- Submit the app for review"
+  lane :appstore_submit do
+    manage_provision
+    update_project
+    build
+    submit_build
+  end
+
+end

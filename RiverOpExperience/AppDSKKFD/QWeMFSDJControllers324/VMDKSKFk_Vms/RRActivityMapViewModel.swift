@@ -186,7 +186,15 @@ final class RRActivityMapViewModel2: ObservableObject {
     @Published var rrDraftKind: RRActivityKind = .run
     @Published var rrDraftImage: UIImage? = nil
     @Published var rrDraftPickerItem: PhotosPickerItem? = nil
+    @Published var rrShowSettingsAlert = false
+    @Published var rrDeniedKind: RRMediaKind = .camera
 
+    var rrDeniedMessage: String {
+        rrDeniedKind == .camera
+            ? "Camera access is off. Enable it in Settings to take a photo."
+            : "Photo access is off. Enable it in Settings to attach an image."
+    }
+    
     init() {
         rrLoadActivities()
     }

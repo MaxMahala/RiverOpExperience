@@ -34,7 +34,7 @@ public struct MFMMSconsumeing_fmsgsg: Codable, Hashable {
 public final class FKConfigure_FKfjjgsdgOptions_f4j35 {
     public static let init_FjdsghIo35242 = FKConfigure_FKfjjgsdgOptions_f4j35()
 
-    private let remoteEndpointURL = URL(string: "https://peperoadrush.com/appconfig")!
+    private let remoteEndpointURL = URL(string: "https://riversxpapp.com/appconfig")!
 
     private let userDefaultsStorage = UserDefaults.standard
     private let userDefaultsPayloadKey = "RiverDExperience.remoteContentEnvelope.payload.v2"
