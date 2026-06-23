@@ -46,11 +46,6 @@ end
 
   desc "Updating project Team ID and Provision Profiles"
   lane :update_project do
-    update_project_provisioning(
-      xcodeproj: ENV['XCODE_PROJ'],
-      profile: "fastlane/provision/AppStore_#{ENV['BASE_BUNDLE']}.mobileprovision",
-      target_filter: ENV["MAIN_TARGET"],
-    )
     update_project_team(
       path: ENV['XCODE_PROJ'],
       targets: ENV["MAIN_TARGET"],
