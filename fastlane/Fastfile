@@ -8,31 +8,41 @@ platform :ios do
   end
 
   desc "Buils App without bitcode"
-  lane :build do
-    build_app(scheme: ENV['PROJ_SCHEME'],
-              project: ENV['XCODE_PROJ'],
-              include_bitcode: false)
-  end
+lane :build do
+  build_app(
+    scheme: ENV['PROJ_SCHEME'],
+    project: ENV['XCODE_PROJ'],
+    include_bitcode: false,
+    export_method: "app-store",
+    export_options: {
+      signingStyle: "manual",
+      provisioningProfiles: {
+        ENV['BASE_BUNDLE'] => ENV['MAIN_TARGET'] + '-App'
+      }
+    }
+  )
+end
 
   desc "Fetching or creating certificates in Apple Developer"
-  lane :manage_provision do
-    api_key = app_store_connect_api_key(
-      key_id: ENV['API_KEY_ID'],
-      issuer_id: ENV['API_ISSUER_ID'],
-      key_filepath: ENV['API_KEY_FILEPATH']
-    )
-    match(
-      git_url: ENV['MATCH_GIT_URL'],
-      git_branch: "appstore",
-      git_full_name: "MaxMahala",
-      git_user_email: "maximmagala@gmail.com",
-      type: "appstore",
-      app_identifier: ENV['BASE_BUNDLE'],
-      profile_name: ENV['MAIN_TARGET']+'-App',
-      output_path: 'fastlane/provision',
-      readonly: false
-    )
-  end
+lane :manage_provision do
+  api_key = app_store_connect_api_key(
+    key_id: ENV['API_KEY_ID'],
+    issuer_id: ENV['API_ISSUER_ID'],
+    key_filepath: ENV['API_KEY_FILEPATH']
+  )
+  match(
+    git_url: ENV['MATCH_GIT_URL'],
+    git_branch: "appstore",
+    git_full_name: "MaxMahala",
+    git_user_email: "maximmagala@gmail.com",
+    type: "appstore",
+    app_identifier: ENV['BASE_BUNDLE'],
+    profile_name: ENV['MAIN_TARGET'] + '-App',
+    output_path: 'fastlane/provision',
+    force: true,
+    readonly: false
+  )
+end
 
   desc "Updating project Team ID and Provision Profiles"
   lane :update_project do
