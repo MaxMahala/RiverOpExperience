@@ -44,15 +44,15 @@ struct LoadingView: View {
             register_Fgkkh435634()
             request_Kfj435_mmvnnfsgpOOPPO()
         }
-//        .onAppear {
-//            if !redkkdsfMotion_jfj435g { helo_KFKWelcomeFM_it35 = true }
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-//                Task {
-//                    await route_FjdsgWeScratch()
-//                }
-//                RRRateAppManager.rrRequestReview()
-//            }
-//        }
+        .onAppear {
+            if !redkkdsfMotion_jfj435g { helo_KFKWelcomeFM_it35 = true }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                Task {
+                    await route_FjdsgWeScratch()
+                }
+                RRRateAppManager.rrRequestReview()
+            }
+        }
         .onDisappear {
             rrController.rrCleanup()
         }
